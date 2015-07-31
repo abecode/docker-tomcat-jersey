@@ -1,14 +1,18 @@
-FROM ubuntu
+FROM google/debian:wheezy
 
 MAINTAINER dharmi@gmail.com
 
-RUN echo deb http://archive.ubuntu.com/ubuntu precise universe > /etc/apt/sources.list.d/universe.list
-RUN apt-get update
+# RUN echo deb http://archive.ubuntu.com/ubuntu precise universe > /etc/apt/sources.list.d/universe.list
+RUN apt-get update && \
+    apt-get -y -f install --no-install-recommends openjdk-7-jdk && \
+    apt-get -y -f install curl
 
-#Install packages
-RUN apt-get -y -f install --no-install-recommends openjdk-7-jdk
-RUN apt-get -y install wget curl git-core nano maven
-RUN apt-get -y install curl
+# Install Maven
+ENV MAVEN_VERSION 3.3.1
+RUN curl -sSL http://archive.apache.org/dist/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz | tar xzf - -C /usr/share \
+  && mv /usr/share/apache-maven-$MAVEN_VERSION /usr/share/maven \
+  && ln -s /usr/share/maven/bin/mvn /usr/bin/mvn
+ENV MAVEN_HOME /usr/share/maven
 
 #Install Tomcat
 ENV CATALINA_HOME /usr/local/tomcat
@@ -30,12 +34,22 @@ RUN set -x \
 #HTTP port
 EXPOSE 8080
 
-# create a Maven jersey artifact, package, and deploy the war on tomcat
+# Create a jersey artifact from Maven, package, and deploy the war on tomcat
 RUN mvn archetype:generate -DarchetypeArtifactId=jersey-quickstart-webapp \
                 -DarchetypeGroupId=org.glassfish.jersey.archetypes -DinteractiveMode=false \
                 -DgroupId=com.example -DartifactId=jerseyapp -Dpackage=com.example \
                 -DarchetypeVersion=2.19 && \
-cd jerseyapp && mvn package -DskipTests && \
-mv target/jerseyapp.war /usr/local/tomcat/webapps && \
-rm -rf ~/jerseyapp
+    cd jerseyapp && mvn package -DskipTests && \
+    mv target/jerseyapp.war /usr/local/tomcat/webapps && \
+    rm -rf ~/jerseyapp
+
+# Start Tomcat
 CMD ["/usr/local/tomcat/bin/catalina.sh", "run"]
+
+#Install & configure Supervisor
+#RUN apt-get -y install supervisor
+#RUN mkdir -p /var/log/supervisor
+#ADD supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+#Run Supervisor
+#CMD ["/usr/bin/supervisord"]

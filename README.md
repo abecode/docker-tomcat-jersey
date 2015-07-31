@@ -1,7 +1,5 @@
 # docker-tomcat-jersey
-Jersey app deployed on Tomcat created from Maven
-
-The application is built with OpenJDK 7 + Tomcat 7 + Maven 3.x
+Jersey webapp created from Maven, deployed on Tomcat 7 running on OpenJDK 7 on a Debian Wheezy Linux distribution.
 
 # Build
 
@@ -10,3 +8,11 @@ The application is built with OpenJDK 7 + Tomcat 7 + Maven 3.x
 # Run
 
 	docker run -d -p 8080:8080 dharmi/tomcat7
+
+# Test
+
+	http://<ip-address>:8080/jerseyapp
+
+
+Note: if you using boot2docker, get the ip address by running
+$ boot2docker ip
