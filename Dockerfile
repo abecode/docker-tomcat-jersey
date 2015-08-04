@@ -30,7 +30,7 @@ RUN set -x \
         && tar -xvf tomcat.tar.gz --strip-components=1 \
         && rm bin/*.bat \
         && rm tomcat.tar.gz* \
-        && chmod 644 /usr/local/tomcat/conf/server.xml
+        && chmod 644 /usr/local/tomcat/conf/*
 
 #HTTP port
 EXPOSE 8080
