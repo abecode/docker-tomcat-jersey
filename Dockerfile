@@ -2,7 +2,8 @@ FROM google/debian:wheezy
 
 MAINTAINER dharmi@gmail.com
 
-# Install JDK with no add-ons
+RUN echo deb http://archive.ubuntu.com/ubuntu precise universe > /etc/apt/sources.list.d/universe.list
+#RUN echo deb http://security.ubuntu.com/ubuntu precise-security main universe > /etc/apt/sources.list.d/universe.list
 RUN apt-get update && \
     apt-get -y -f install --no-install-recommends openjdk-7-jdk && \
     apt-get -y -f install curl
@@ -20,8 +21,8 @@ ENV PATH $CATALINA_HOME/bin:$PATH
 RUN mkdir -p "$CATALINA_HOME"
 WORKDIR $CATALINA_HOME
 
-ENV TOMCAT_MAJOR 7
-ENV TOMCAT_VERSION 7.0.63
+ENV TOMCAT_MAJOR 8
+ENV TOMCAT_VERSION 8.0.24
 ENV TOMCAT_TGZ_URL https://www.apache.org/dist/tomcat/tomcat-$TOMCAT_MAJOR/v$TOMCAT_VERSION/bin/apache-tomcat-$TOMCAT_VERSION.tar.gz
 
 RUN set -x \
