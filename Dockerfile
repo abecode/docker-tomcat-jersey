@@ -2,7 +2,7 @@ FROM google/debian:wheezy
 
 MAINTAINER dharmi@gmail.com
 
-# RUN echo deb http://archive.ubuntu.com/ubuntu precise universe > /etc/apt/sources.list.d/universe.list
+# Install JDK with no add-ons
 RUN apt-get update && \
     apt-get -y -f install --no-install-recommends openjdk-7-jdk && \
     apt-get -y -f install curl
